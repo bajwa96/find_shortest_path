@@ -9,5 +9,6 @@
 #include "Header.h"
 int main(int argc, const char * argv[]) {
     //hell
+    cout<<"hello";
     return 0;
 }
