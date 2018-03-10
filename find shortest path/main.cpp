@@ -17,6 +17,7 @@ int main(int argc, const char * argv[]) {
     }
     int str,stcol,er,ecol;
     str=stcol=er=ecol=-1;
+    cout<<endl;
     for(int i=0;i<r;i++){
         for(int j=0;j<c;j++){
             if(inp[i][j]=='s'){
