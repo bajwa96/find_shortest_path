@@ -32,8 +32,8 @@ struct ways{
         this->left=left;
     };
 };
+
 struct routeinfo{
-    
     vector<path> currentroute; //path info
     int crtr,crtcol;// current r and c
     int lastway;// last way or can be seen simply by cureentroute.begin()
@@ -45,8 +45,8 @@ struct routeinfo{
         crtr=ct;
         crtcol=crtcl;
     };
-    
 };
+
 ways *get_available_paths(char inp[][100],int str,int stcol,int lastway,int r,int c){
     /*
      up=0
@@ -68,44 +68,31 @@ ways *get_available_paths(char inp[][100],int str,int stcol,int lastway,int r,in
     if(stcol-1>=0){
         if(inp[str][stcol-1]=='.'||inp[str][stcol-1]=='e') left=true;
     }
-    /*
-    if(lastway==0){
-        down=false;
-    }
-    else if(lastway==1){
-        up=false;
-    }
-    else if(lastway==2){
-        right=false;
-    }
-    else if(lastway==3){
-        left=false;
-    }*/
     ways *t=new ways(up,down,right,left);
-    //cout<<"O/P"<<up<<" "<<down<<" "<<right<<" "<<left<<'|'<<str<<"-"<<stcol<<endl;
     return t;
 }
+
 /*
  4 node tree will be formed in recursion which will result in max 3 nodes and in worst case 0
  with 0 it will lock value if it had reached its on destination
  else it will just go to next node in next recursion
  */
+
 bool not_visited_path(vector<path> route,int str, int stcol){
     for(auto it=route.begin();it!=route.end();it++){
-        //cout<<it->r<<" "<<it->c<<endl;
         if(it->r==str&&it->c==stcol){
             return false;
         }
     }
     return true;
 }
+
 void show_the_route_to_user(char inp[][100],vector<path> p,int r,int c,int ec,int erow){
     int output[r][c];
     for(int i=0;i<r;i++){
         for(int j=0;j<c;j++){
             output[i][j]=-1;
             if(inp[i][j]=='b')output[i][j]=-2;
-            
         }
     }
     int counter=0;
@@ -132,21 +119,16 @@ void show_the_route_to_user(char inp[][100],vector<path> p,int r,int c,int ec,in
                 if(output[i][j]==-2)cout<<"b\t";
                 if(output[i][j]==-4)cout<<"e\t";
             }
-            
         }
         cout<<endl;
     }
     cout<<endl;
 }
 
-
 void whilestackisnotempty(char inp[][100],int er,int ecol,int r,int c,stack <routeinfo> differentapproches,vector<int> &count){
     while(!differentapproches.empty()){
-        //cout<<"Hello"<<endl;
         struct routeinfo *t=&differentapproches.top();
-        //cout<<"F"<<ecol<<" "<<er<<endl;
         if(t->crtcol==ecol&&t->crtr==er){
-           // cout<<"Steps found"<<t->steps<<endl;
             show_the_route_to_user(inp,t->currentroute,r,c,ecol,er);
             count.push_back(t->steps);
             differentapproches.pop();
@@ -156,7 +138,6 @@ void whilestackisnotempty(char inp[][100],int er,int ecol,int r,int c,stack <rou
             struct path *pathcoverd=new path(t->crtr,t->crtcol);
             currentpath.push_back(*pathcoverd);
             int steps=t->steps;
-            //cout<<steps;
             int str=t->crtr;
             int stcol=t->crtcol;
             differentapproches.pop();
@@ -188,32 +169,8 @@ void whilestackisnotempty(char inp[][100],int er,int ecol,int r,int c,stack <rou
         
     }
 }
-/*
- first pos is to be harcoded before it is sent to loop and new pos are to be added to stack for further processes
- */
+
 stack <routeinfo> get_stack_initial(stack <routeinfo> &stackinitial,char inp[][100],int str,int stcol,int r,int c){
-    /*
-     struct routeinfo{
-     vector<path> currentroute;
-     int crtr,crtcol;
-     int lastway;
-     int steps;
-     routeinfo(vector<path> p,int law,int stp,int ct,int crtcl){
-     currentroute=p;
-     lastway=law;
-     stp=steps;
-     crtr=ct;
-     crtcol=crtcl;
-     };
-     };
-     */
-    /*
-     up=0
-     down=1
-     left=2
-     right=3
-     */
-    //cout<<str<<" "<<stcol<<endl;
     struct ways *tt=get_available_paths(inp, str, stcol, -1, r, c);
     vector<path> p;
     struct path *pp=new path(str,stcol);
@@ -221,36 +178,29 @@ stack <routeinfo> get_stack_initial(stack <routeinfo> &stackinitial,char inp[][1
     
     bool up=tt->up,down=tt->down,right=tt->right,left=tt->left; //can use priority for efficient algo
     
-    if(up==true){//means up is possible
-        //cout<<"up"<<endl;
+    if(up==true){
         struct routeinfo *t=new routeinfo(p,1,1,str-1,stcol); //since last path will be start //2 ==not down
         stackinitial.push(*t);
     }
     if(down==true){
-        //cout<<"down"<<endl;
         struct routeinfo *t=new routeinfo(p,0,1,str+1,stcol); //since last path will be start //1 ==not up
         stackinitial.push(*t);
     }
     if(left==true){
-        //cout<<"left"<<endl;
         struct routeinfo *t=new routeinfo(p,3,1,str,stcol-1); //since last path will be start //3 ==not left
         stackinitial.push(*t);
     }
     if(right==true){
-        //cout<<"right"<<endl;
         struct routeinfo *t=new routeinfo(p,2,1,str,stcol+1); //since last path will be start //1 ==not right
         stackinitial.push(*t);
     }
-    //cout<<"Size"<<stackinitial.size()<<endl;
     return stackinitial;
     
     
 }
 
-
 int getbestroute(char inp[][100],int str,int stcol,int er,int ecol,int r,int c){
     vector<int> count;
-    //cout<<str<<" "<<stcol<<endl;
     vector<path> route;
     stack <routeinfo> differentapproches;
     get_stack_initial(differentapproches,inp, str, stcol, r, c);
@@ -264,8 +214,5 @@ int getbestroute(char inp[][100],int str,int stcol,int er,int ecol,int r,int c){
     if(ret!=count.end()) return *ret;
     return -1;
 }
-
-
-
 
 #endif /* Header_h */
