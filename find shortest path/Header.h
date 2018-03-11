@@ -100,10 +100,11 @@ bool not_visited_path(vector<path> route,int str, int stcol){
     return true;
 }
 void show_the_route_to_user(char inp[][100],vector<path> p,int r,int c,int ec,int erow){
-    char output[r][c];
+    int output[r][c];
     for(int i=0;i<r;i++){
-        for(int j=0;j<c;j++){output[i][j]='.';
-            if(inp[i][j]=='b')output[i][j]='b';
+        for(int j=0;j<c;j++){
+            output[i][j]=-1;
+            if(inp[i][j]=='b')output[i][j]=-2;
             
         }
     }
@@ -113,16 +114,26 @@ void show_the_route_to_user(char inp[][100],vector<path> p,int r,int c,int ec,in
         rr=it->r;
         cc=it->c;
         if(counter==0){
-            output[rr][cc]='s';
+            output[rr][cc]=-3;
             counter++;
         }else{
-            output[rr][cc]=counter+'0';
+            output[rr][cc]=counter;
             counter++;
         }
     }
-    output[erow][ec]='e';
+    output[erow][ec]=-4;
     for(int i=0;i<r;i++){
-        for(int j=0;j<c;j++)cout<<output[i][j];
+        for(int j=0;j<c;j++){
+            if(output[i][j]>=0)
+                cout<<output[i][j]<<"\t";
+            else{
+                if(output[i][j]==-1)cout<<".\t";
+                if(output[i][j]==-3)cout<<"s\t";
+                if(output[i][j]==-2)cout<<"b\t";
+                if(output[i][j]==-4)cout<<"e\t";
+            }
+            
+        }
         cout<<endl;
     }
     cout<<endl;
